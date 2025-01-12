@@ -132,7 +132,7 @@ function spawnEnemies(){
             x = Math.random() * canvas.width;
             y = canvas.height;
         }
-        {
+        else {
             x=0;
             y=Math.random()*canvas.height;
         }
