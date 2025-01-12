@@ -58,6 +58,7 @@ let bullets=[];
 let enemies=[];
 let level=1;
 let gameOver=false;
+let score=0;
 
 //Bullet Class
 
@@ -155,6 +156,7 @@ function checkBulletCollision(){
                 //Bullet hits
                 bullets.splice(bulletIndex,1);
                 enemies.splice(enemyIndex,1);
+                score+=10;
             }
         })
     });
@@ -195,11 +197,20 @@ function checkLevelCompletion(){
     }
 }
 
+//Score
+
+function displayScore(){
+    ctx.fillStyle='white';
+    ctx.font='24px Arial';
+    ctx.fillText('Score: '+ score,20,40);
+}
+
 // Game Loop
 
 function gameLoop(){
     if(gameOver) {
         displayGameOver();
+        score=0;
         return;
     }
 
@@ -236,15 +247,24 @@ function gameLoop(){
 
         if(Math.abs(enemy.x-playerBase.x)<playerBase.width/2 && Math.abs(enemy.y-playerBase.y)<playerBase.height/2){
             gameOver=true;
-            alert("Game Over!");
+            //alert('Game Over!');
         }
     });
 
     checkLevelCompletion();
 
+    displayScore();
+
     requestAnimationFrame(gameLoop);
 
 }
 
+function startGame(){
+    document.getElementById('instructions').style.display='none';
+    spawnEnemies();
+    gameLoop();
+}
+
+document.getElementById('startBtn').addEventListener('click',startGame);
+
 spawnEnemies();
-gameLoop();
