@@ -63,14 +63,3 @@ button:hover{
    background-color: teal;
 }
 
-/*Score board Position */
-
-#scoreboard{
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    z-index: 5;
-}
