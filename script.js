@@ -6,13 +6,53 @@ const ctx=canvas.getContext('2d');
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 
+const playerBaseImg= new Image();
+playerBaseImg.src='./assets/space-turret.png';
+
+const enemyShipImg = new Image();
+enemyShipImg.src='./assets/enemy.png';
+
+let mouseX=0;
+let mouseY=0;
+
+canvas.addEventListener('mousemove',(event)=>{
+    const rect=canvas.getBoundingClientRect();
+    mouseX=event.clientX-rect.left;
+    mouseY=event.clientY-rect.top;
+});
+
 const playerBase = {
     x:canvas.width/2,
     y:canvas.height/2,
-    width:50,
-    height:50,
+    width:100,
+    height:100,
     color:"green",
 };
+
+//Get turret angle 
+
+function getTurretAngle() {
+    const dx = mouseX - playerBase.x;
+    const dy = mouseY - playerBase.y;
+    const angle = Math.atan2(dy, dx); // Calculate angle in radians
+  
+    //console.log(`Turret Angle (Radians): ${angle}, Degrees: ${(angle * 180) / Math.PI}`);
+    return angle;
+  }
+
+function drawPlayerBase(){
+
+    const angle=getTurretAngle();
+
+    ctx.save();
+
+    ctx.translate(playerBase.x,playerBase.y);
+    ctx.rotate(angle);
+
+    ctx.drawImage(playerBaseImg,-playerBase.width/2,-playerBase.height/2,playerBase.width,playerBase.height);
+
+    ctx.restore();
+}
 
 let bullets=[];
 let enemies=[];
@@ -61,8 +101,7 @@ class Enemy{
     }
 
     draw(){
-        ctx.fillStyle='red';
-        ctx.fillRect(this.x,this.y,this.width,this.height);
+        ctx.drawImage(enemyShipImg, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }
 }
 
@@ -79,7 +118,7 @@ function spawnEnemies(){
     for(let i=0;i<level*3;i++){
         let side=Math.floor(Math.random()*4);
         let x,y;
-        let speed=level*0.1+1;
+        let speed=level*0.1+0.5;
 
         if(side==0){
             x=Math.random()*canvas.width;
@@ -166,10 +205,14 @@ function gameLoop(){
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    //Player Base
+    //Player Base 
+    //Image
 
-    ctx.fillStyle=playerBase.color;
-    ctx.fillRect(playerBase.x-playerBase.width/2,playerBase.y-playerBase.height/2,playerBase.width,playerBase.height);
+    drawPlayerBase();
+
+    //Player Base Rectangle
+    //ctx.fillStyle=playerBase.color;
+    //ctx.fillRect(playerBase.x-playerBase.width/2,playerBase.y-playerBase.height/2,playerBase.width,playerBase.height);
 
     //Update and draw Bullets
 
