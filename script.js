@@ -183,6 +183,7 @@ function resetGame(){
     level=1;
     bullets=[];
     enemies=[];
+    health=100;
     spawnEnemies();
     gameLoop();
 }
