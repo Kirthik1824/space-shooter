@@ -10,3 +10,4 @@ Further Changes to be done:
 4. Impact Animations
 5. Sounds
 6. Better UI
+7. Final Suggestions / Ideas 
