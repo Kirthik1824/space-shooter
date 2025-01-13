@@ -59,6 +59,7 @@ let enemies=[];
 let level=1;
 let gameOver=false;
 let score=0;
+let health=100;
 
 //Bullet Class
 
@@ -203,6 +204,13 @@ function displayScore(){
     ctx.fillText('Score: '+ score,20,40);
 }
 
+function displayHealth(){
+    ctx.fillStyle='white';
+    ctx.font='24px Arial';
+    ctx.fillText('Health: '+ health,20,80)
+    ctx.fillRect(20,100,health*2,20);
+}
+
 // Game Loop
 
 function gameLoop(){
@@ -244,14 +252,21 @@ function gameLoop(){
         enemy.draw();
 
         if(Math.abs(enemy.x-playerBase.x)<playerBase.width/2 && Math.abs(enemy.y-playerBase.y)<playerBase.height/2){
-            gameOver=true;
-            //alert('Game Over!');
+            health-=10;
+            enemies.splice(index,1);
+
+            if(health<=0){
+                gameOver=true;
+                alert('Game Over!');
+            }
         }
     });
 
     checkLevelCompletion();
 
     displayScore();
+
+    displayHealth();
 
     requestAnimationFrame(gameLoop);
 
