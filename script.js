@@ -168,14 +168,12 @@ function displayGameOver(){
     ctx.fillStyle='white';
     ctx.font='30px Arial';
     ctx.fillText("Game Over!",canvas.width/2-90,canvas.height/2);
-    ctx.fillText("Press 'R' to restart", canvas.width/2-120, canvas.height/2+40);   
+    ctx.fillText("Click to restart", canvas.width/2-100, canvas.height/2+40);   
 }
 
-document.addEventListener('keydown',function(e){
-    if(e.key=='r'||e.key=='R'){
-        if(gameOver){
-            resetGame();
-        }
+canvas.addEventListener('click',function(e){
+    if(gameOver){
+        resetGame();
     }
 });
 

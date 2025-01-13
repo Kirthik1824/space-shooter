@@ -31,19 +31,20 @@ body,html {
 .instructions-content{
     background-color: white;
     padding: 20px;
-    text-align: center;
+    text-align: left;
     border-radius: 8px;
     width: 60%;
     max-width: 400px;
 }
 
-h1{
+h1{ 
+    text-align: center;
     font-size: 2em;
     margin-bottom: 15px;
 }
 
 ul{
-    list-style-type: none;
+    list-style-type: default;
     margin-bottom: 20px;
 }
 
