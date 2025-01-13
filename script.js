@@ -107,6 +107,8 @@ class Enemy{
     }
 }
 
+//FIRING
+
 //Mouse Click to fire
 
 canvas.addEventListener("click",function(e){
@@ -114,10 +116,24 @@ canvas.addEventListener("click",function(e){
     bullets.push(new bullet(playerBase.x,playerBase.y, angle));
 });
 
+let angle = 0;
+
+document.addEventListener('mousemove', function (e) {
+    angle = Math.atan2(e.clientY - playerBase.y, e.clientX - playerBase.x);
+});
+
+// Fire bullets when the spacebar is pressed
+document.addEventListener('keydown', function (e) {
+    if (e.key === ' ') {
+        e.preventDefault();
+        bullets.push(new bullet(playerBase.x, playerBase.y, angle));
+    }
+});
+
 //Spawn enemies
 
 function spawnEnemies(){
-    for(let i=0;i<level*3;i++){
+    for(let i=0;i<level*2;i++){
         let side=Math.floor(Math.random()*4);
         let x,y;
         let speed=level*0.1+0.5;
@@ -280,5 +296,3 @@ function startGame(){
 }
 
 document.getElementById('startBtn').addEventListener('click',startGame);
-
-spawnEnemies();
