@@ -2,7 +2,7 @@ A Space Shooter game.
 
 Play it on https://epic-space-shooter.netlify.app/
 
-Further Changes:
+Further Changes to be done:
 
 1. Spacebar firing
 2. Spawn correction (at intervals)
