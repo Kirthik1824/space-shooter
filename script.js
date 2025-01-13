@@ -56,6 +56,7 @@ function drawPlayerBase(){
 
 let bullets=[];
 let enemies=[];
+let explosions = [];
 let level=1;
 let gameOver=false;
 let score=0;
@@ -106,6 +107,31 @@ class Enemy{
         ctx.drawImage(enemyShipImg, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
     }
 }
+
+class Explosion {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = 0;
+        this.maxSize = 50;
+        this.opacity = 1;
+    }
+
+    update() {
+        if (this.size < this.maxSize) {
+            this.size += 2;
+            this.opacity -= 0.05;
+        }
+    }
+
+    draw() {
+        ctx.fillStyle = `rgba(255, 0, 0, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
 
 //FIRING
 
@@ -171,11 +197,26 @@ function checkBulletCollision(){
                 bullet.y +bullet.height > enemy.y 
             ){
                 //Bullet hits
+                explosions.push(new Explosion(enemy.x, enemy.y));
+
                 bullets.splice(bulletIndex,1);
                 enemies.splice(enemyIndex,1);
                 score+=10;
             }
         })
+    });
+}
+
+//Explosion update
+
+function updateExplosions(ctx){
+    explosions.forEach((explosion,index)=>{
+        explosion.update();
+        explosion.draw();
+
+        if(explosion.opacity<=0){
+            explosions.splice(index,1);
+        }
     });
 }
 
@@ -238,6 +279,8 @@ function gameLoop(){
     }
 
     ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    updateExplosions(ctx);
 
     //Player Base 
     //Image
