@@ -12,6 +12,8 @@ playerBaseImg.src='./assets/space-turret.png';
 const enemyShipImg = new Image();
 enemyShipImg.src='./assets/enemy.png';
 
+const collisionSound = new Audio('./assets/explosion.mp3');
+
 let mouseX=0;
 let mouseY=0;
 
@@ -199,12 +201,20 @@ function checkBulletCollision(){
                 //Bullet hits
                 explosions.push(new Explosion(enemy.x, enemy.y));
 
+                playCollisionSound();
                 bullets.splice(bulletIndex,1);
                 enemies.splice(enemyIndex,1);
                 score+=10;
             }
         })
     });
+}
+
+//Collision sound
+
+function playCollisionSound(){
+    collisionSound.currentTime=0;
+    collisionSound.play();
 }
 
 //Explosion update
