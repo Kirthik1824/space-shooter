@@ -157,6 +157,21 @@ function updateExplosions() {
   });
 }
 
+function updateBullets(){
+    bullets.forEach((bullet, index) => {
+        bullet.update();
+        bullet.draw();
+        if (
+          bullet.x < 0 ||
+          bullet.x > canvas.width ||
+          bullet.y < 0 ||
+          bullet.y > canvas.height
+        ) {
+          bullets.splice(index, 1);
+        }
+      });
+}
+
 // Enemies
 function spawnEnemies() {
   for (let i = 0; i < level * 2; i++) {
@@ -180,6 +195,23 @@ function spawnEnemies() {
 
     enemies.push(new Enemy(x, y, speed));
   }
+}
+
+function updateEnemies(){
+    enemies.forEach((enemy, index) => {
+        enemy.update();
+        enemy.draw();
+        if (
+          Math.abs(enemy.x - playerBase.x) < playerBase.width / 2 &&
+          Math.abs(enemy.y - playerBase.y) < playerBase.height / 2
+        ) {
+          health -= 10;
+          enemies.splice(index, 1);
+          if (health <= 0) {
+            gameOver = true;
+          }
+        }
+      });
 }
 
 // Game State
@@ -267,35 +299,10 @@ function gameLoop() {
   updateExplosions();
   drawPlayerBase();
 
-  bullets.forEach((bullet, index) => {
-    bullet.update();
-    bullet.draw();
-    if (
-      bullet.x < 0 ||
-      bullet.x > canvas.width ||
-      bullet.y < 0 ||
-      bullet.y > canvas.height
-    ) {
-      bullets.splice(index, 1);
-    }
-  });
+  updateBullets();
 
   checkBulletCollision();
-
-  enemies.forEach((enemy, index) => {
-    enemy.update();
-    enemy.draw();
-    if (
-      Math.abs(enemy.x - playerBase.x) < playerBase.width / 2 &&
-      Math.abs(enemy.y - playerBase.y) < playerBase.height / 2
-    ) {
-      health -= 10;
-      enemies.splice(index, 1);
-      if (health <= 0) {
-        gameOver = true;
-      }
-    }
-  });
+  updateEnemies();
 
   checkLevelCompletion();
   displayScore();
