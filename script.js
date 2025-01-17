@@ -10,6 +10,7 @@ let gameOver = false;
 let score = 0;
 let health = 100;
 let angle = 0;
+let isPaused = false;
 
 // CONSTANTS ----------------------------------------------------------------------------------------
 
@@ -18,6 +19,14 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const playerBase = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    width: 100,
+    height: 100,
+    color: "green",
+  };
+
 const playerBaseImg = new Image();
 playerBaseImg.src = './assets/space-turret.png';
 
@@ -25,17 +34,10 @@ const enemyShipImg = new Image();
 enemyShipImg.src = './assets/enemy.png';
 
 const collisionSound = new Audio('./assets/explosion.mp3');
+collisionSound.volume=0.3;
+
 const bgm = new Audio('./assets/bgm.mp3');
-
 bgm.loop=true;
-
-const playerBase = {
-  x: canvas.width / 2,
-  y: canvas.height / 2,
-  width: 100,
-  height: 100,
-  color: "green",
-};
 
 // CLASSES -----------------------------------------------------------------------------------------
 
@@ -253,8 +255,10 @@ function displayScore() {
 
 function displayHealth() {
   ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'white';
   ctx.font = '24px Arial';
   ctx.fillText('Health: ' + health, 20, 80);
+  ctx.strokeRect(20, 100, 200, 20);
   ctx.fillRect(20, 100, health * 2, 20);
 }
 
@@ -291,11 +295,23 @@ document.addEventListener('keydown', (e) => {
 
 document.getElementById('startBtn').addEventListener('click', startGame);
 
+document.addEventListener('keydown',(e)=>{
+    if(e.key=='p' || e.key=='P') {
+     isPaused=!isPaused; 
+     if(!isPaused) gameLoop();      
+    }
+});
+
 // GAME LOOP ---------------------------------------------------------------------------------------
 
 function gameLoop() {
   if (gameOver) {
     displayGameOver();
+    return;
+  }
+
+  if(isPaused) {
+    bgm.pause();
     return;
   }
 
