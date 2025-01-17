@@ -11,6 +11,7 @@ let score = 0;
 let health = 100;
 let angle = 0;
 let isPaused = false;
+let kills= 0;
 
 // CONSTANTS ----------------------------------------------------------------------------------------
 
@@ -142,6 +143,7 @@ function checkBulletCollision() {
         bullets.splice(bulletIndex, 1);
         enemies.splice(enemyIndex, 1);
         score += 10;
+        kills ++;
       }
     });
   });
@@ -179,28 +181,29 @@ function updateBullets(){
 
 // Enemies
 function spawnEnemies() {
-  for (let i = 0; i < level * 2; i++) {
-    const side = Math.floor(Math.random() * 4);
-    let x, y;
-    const speed = level * 0.1 + 0.5;
-
-    if (side === 0) {
-      x = Math.random() * canvas.width;
-      y = 0;
-    } else if (side === 1) {
-      x = canvas.width;
-      y = Math.random() * canvas.height;
-    } else if (side === 2) {
-      x = Math.random() * canvas.width;
-      y = canvas.height;
-    } else {
-      x = 0;
-      y = Math.random() * canvas.height;
+    const maxEnemies = 1+kills/10; 
+    while (enemies.length < maxEnemies) {
+      const side = Math.floor(Math.random() * 4);
+      let x, y;
+      let speed = 0.5 + kills/500; 
+  
+      if (side === 0) {
+        x = Math.random() * canvas.width;
+        y = 0; 
+      } else if (side === 1) {
+        x = canvas.width;
+        y = Math.random() * canvas.height; 
+      } else if (side === 2) {
+        x = Math.random() * canvas.width;
+        y = canvas.height; 
+      } else {
+        x = 0;
+        y = Math.random() * canvas.height; 
+      }
+  
+      enemies.push(new Enemy(x, y, speed));
     }
-
-    enemies.push(new Enemy(x, y, speed));
   }
-}
 
 function updateEnemies(){
     enemies.forEach((enemy, index) => {
@@ -240,12 +243,12 @@ function resetGame() {
   gameLoop();
 }
 
-function checkLevelCompletion() {
-  if (enemies.length === 0) {
-    level++;
-    spawnEnemies();
-  }
-}
+// function checkLevelCompletion() {
+//   if (enemies.length === 0) {
+//     level++;
+//     spawnEnemies();
+//   }
+// }
 
 function displayScore() {
   ctx.fillStyle = 'white';
@@ -325,9 +328,10 @@ function gameLoop() {
   updateBullets();
 
   checkBulletCollision();
+  spawnEnemies();
   updateEnemies();
 
-  checkLevelCompletion();
+  //checkLevelCompletion();
   displayScore();
   displayHealth();
 
