@@ -25,6 +25,9 @@ const enemyShipImg = new Image();
 enemyShipImg.src = './assets/enemy.png';
 
 const collisionSound = new Audio('./assets/explosion.mp3');
+const bgm = new Audio('./assets/bgm.mp3');
+
+bgm.loop=true;
 
 const playerBase = {
   x: canvas.width / 2,
@@ -216,6 +219,9 @@ function updateEnemies(){
 
 // Game State
 function displayGameOver() {
+  score = 0;
+  bgm.pause();
+  bgm.currentTime=0;
   ctx.fillStyle = 'white';
   ctx.font = '30px Arial';
   ctx.fillText("Game Over!", canvas.width / 2 - 90, canvas.height / 2);
@@ -290,9 +296,10 @@ document.getElementById('startBtn').addEventListener('click', startGame);
 function gameLoop() {
   if (gameOver) {
     displayGameOver();
-    score = 0;
     return;
   }
+
+  bgm.play();
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
