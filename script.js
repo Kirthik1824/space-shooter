@@ -12,6 +12,7 @@ let health = 100;
 let angle = 0;
 let isPaused = false;
 let kills= 0;
+let specks = [];
 
 // CONSTANTS ----------------------------------------------------------------------------------------
 
@@ -52,6 +53,27 @@ const bgm = new Audio('./assets/bgm.mp3');
 bgm.loop=true;
 
 // CLASSES -----------------------------------------------------------------------------------------
+
+// Background
+class Speck {
+  constructor(x){
+    this.x=x
+    this.y=0;
+    this.width=2;
+    this.height=2;
+    this.color='white';
+    this.speed=1;
+  }
+
+  update() {
+    this.y += this.speed;
+  }
+
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
 
 // Bullet Class
 class Bullet {
@@ -122,6 +144,28 @@ class Explosion {
 }
 
 // FUNCTIONS ---------------------------------------------------------------------------------------
+
+//Background
+function spawnBackground(){
+  const maxSpecks=5;
+  let i=0;
+  while (i++ < maxSpecks) {
+    let x=Math.random()*canvas.width;
+    specks.push(new Speck(x));
+  }
+}
+
+function updateBackground(){
+  specks.forEach((speck, index) => {
+    speck.update();
+    speck.draw();
+    if (
+      speck.y > canvas.height
+    ) {
+      specks.splice(index, 1);
+    }
+  });
+}
 
 //Player Base
 function drawPlayerBase(){
@@ -369,6 +413,9 @@ function gameLoop() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  spawnBackground();
+  updateBackground();
+
   updateExplosions();
   updatePlayerJet();
 
@@ -376,8 +423,8 @@ function gameLoop() {
   drawPlayerJet();
 
   updateBullets();
-
   checkBulletCollision();
+
   spawnEnemies();
   updateEnemies();
 
