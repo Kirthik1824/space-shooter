@@ -12,9 +12,10 @@ Further Changes to be done:
 6. Different ammunition
 7. Powerups
 8. Impact Animations
-9. Sounds 
-10. Better UI
-11. Final Suggestions / Ideas
+9. Sounds
+10. Comments 
+11. Better UI
+12. Final Suggestions / Ideas
 
 Finish latest by 19th Jan
 
