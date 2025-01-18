@@ -20,7 +20,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const playerBase = {
+const playerJet = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     width: 100,
@@ -28,8 +28,16 @@ const playerBase = {
     color: "green",
   };
 
-const playerBaseImg = new Image();
-playerBaseImg.src = './assets/space-turret.png';
+const playerBase = {
+    x: canvas.width / 2,
+    y: canvas.height-50,
+    width: 100,
+    height: 100,
+    color: "green",
+  };
+
+const playerJetImg = new Image();
+playerJetImg.src = './assets/space-turret.png';
 
 const enemyShipImg = new Image();
 enemyShipImg.src = './assets/enemy.png';
@@ -112,19 +120,25 @@ class Explosion {
 
 // FUNCTIONS ---------------------------------------------------------------------------------------
 
-// Player Base
+//Player Base
+function drawPlayerBase(){
+  ctx.fillStyle=playerBase.color;
+  ctx.fillRect(playerBase.x, playerBase.y, playerBase.width, playerBase.height);
+}
+
+// Player Jet
 function getTurretAngle() {
-  const dx = mouseX - playerBase.x;
-  const dy = mouseY - playerBase.y;
+  const dx = mouseX - playerJet.x;
+  const dy = mouseY - playerJet.y;
   return Math.atan2(dy, dx);
 }
 
-function drawPlayerBase() {
+function drawPlayerJet() {
   const angle = getTurretAngle();
   ctx.save();
-  ctx.translate(playerBase.x, playerBase.y);
+  ctx.translate(playerJet.x, playerJet.y);
   ctx.rotate(angle);
-  ctx.drawImage(playerBaseImg, -playerBase.width / 2, -playerBase.height / 2, playerBase.width, playerBase.height);
+  ctx.drawImage(playerJetImg, -playerJet.width / 2, -playerJet.height / 2, playerJet.width, playerJet.height);
   ctx.restore();
 }
 
@@ -181,9 +195,9 @@ function updateBullets(){
 
 // Enemies
 function spawnEnemies() {
-    const maxEnemies = 1+kills/10; 
+    const maxEnemies = Math.min(1+kills/10,10); 
     while (enemies.length < maxEnemies) {
-      const side = Math.floor(Math.random() * 4);
+      const side = Math.floor(Math.random() * 3);
       let x, y;
       let speed = 0.5 + kills/500; 
   
@@ -193,9 +207,6 @@ function spawnEnemies() {
       } else if (side === 1) {
         x = canvas.width;
         y = Math.random() * canvas.height; 
-      } else if (side === 2) {
-        x = Math.random() * canvas.width;
-        y = canvas.height; 
       } else {
         x = 0;
         y = Math.random() * canvas.height; 
@@ -277,22 +288,22 @@ canvas.addEventListener('mousemove', (event) => {
   const rect = canvas.getBoundingClientRect();
   mouseX = event.clientX - rect.left;
   mouseY = event.clientY - rect.top;
-  angle = Math.atan2(event.clientY - playerBase.y, event.clientX - playerBase.x);
+  angle = Math.atan2(event.clientY - playerJet.y, event.clientX - playerJet.x);
 });
 
 canvas.addEventListener("click", (e) => {
   if (gameOver) {
     resetGame();
   } else {
-    const angle = Math.atan2(e.clientY - playerBase.y, e.clientX - playerBase.x);
-    bullets.push(new Bullet(playerBase.x, playerBase.y, angle));
+    const angle = Math.atan2(e.clientY - playerJet.y, e.clientX - playerJet.x);
+    bullets.push(new Bullet(playerJet.x, playerJet.y, angle));
   }
 });
 
 document.addEventListener('keydown', (e) => {
   if (e.key === ' ') {
     e.preventDefault();
-    bullets.push(new Bullet(playerBase.x, playerBase.y, angle));
+    bullets.push(new Bullet(playerJet.x, playerJet.y, angle));
   }
 });
 
@@ -323,7 +334,9 @@ function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   updateExplosions();
+
   drawPlayerBase();
+  drawPlayerJet();
 
   updateBullets();
 
