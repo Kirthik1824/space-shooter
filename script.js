@@ -15,6 +15,7 @@ let kills= 0;
 
 // CONSTANTS ----------------------------------------------------------------------------------------
 
+const keys ={};
 const canvas = document.getElementById('gamecanvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
@@ -26,14 +27,16 @@ const playerJet = {
     width: 100,
     height: 100,
     color: "green",
+    speed: 3,
   };
 
 const playerBase = {
     x: canvas.width / 2,
-    y: canvas.height-50,
+    y: canvas.height-100,
+    radius: 100,
     width: 100,
     height: 100,
-    color: "green",
+    color: "blue",
   };
 
 const playerJetImg = new Image();
@@ -123,7 +126,11 @@ class Explosion {
 //Player Base
 function drawPlayerBase(){
   ctx.fillStyle=playerBase.color;
-  ctx.fillRect(playerBase.x, playerBase.y, playerBase.width, playerBase.height);
+  ctx.beginPath();
+  ctx.arc(playerBase.x, playerBase.y, playerBase.radius, 0, Math.PI, true); 
+  ctx.lineTo(playerBase.x, playerBase.y); 
+  ctx.closePath();
+  ctx.fill();
 }
 
 // Player Jet
@@ -140,6 +147,24 @@ function drawPlayerJet() {
   ctx.rotate(angle);
   ctx.drawImage(playerJetImg, -playerJet.width / 2, -playerJet.height / 2, playerJet.width, playerJet.height);
   ctx.restore();
+}
+
+function updatePlayerJet(){
+  if (keys['w']) {
+    playerJet.y -= playerJet.speed;
+  }
+  if (keys['a']) {
+    playerJet.x -= playerJet.speed;
+  }
+  if (keys['s']) {
+    playerJet.y += playerJet.speed;
+  }
+  if (keys['d']) {
+    playerJet.x += playerJet.speed;
+  }
+
+  playerJet.x = Math.max(0, Math.min(canvas.width - playerJet.width, playerJet.x));
+  playerJet.y = Math.max(0, Math.min(canvas.height - playerJet.height, playerJet.y));
 }
 
 // Bullet Collision
@@ -284,6 +309,16 @@ function startGame() {
 
 // EVENT LISTENERS ---------------------------------------------------------------------------------
 
+//PlayerJet Movement
+document.addEventListener('keydown',(e)=>{
+  keys[e.key]=true;
+});
+
+document.addEventListener('keyup',(e)=>{
+  keys[e.key]=false;
+});
+
+//Firing
 canvas.addEventListener('mousemove', (event) => {
   const rect = canvas.getBoundingClientRect();
   mouseX = event.clientX - rect.left;
@@ -307,6 +342,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+//Start and Pause Game
 document.getElementById('startBtn').addEventListener('click', startGame);
 
 document.addEventListener('keydown',(e)=>{
@@ -334,6 +370,7 @@ function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   updateExplosions();
+  updatePlayerJet();
 
   drawPlayerBase();
   drawPlayerJet();
